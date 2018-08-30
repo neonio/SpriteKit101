@@ -25,7 +25,8 @@ class JumpingState: PlayerState {
     let textures: [SKTexture] = (0..<2).map({return "jump/\($0)"}).map(SKTexture.init)
     lazy var action = {SKAction.animate(with: textures, timePerFrame: 0.1)}()
     override func isValidNextState(_ stateClass: AnyClass) -> Bool {
-        return true
+        if isFinished && stateClass is LandingState.Type { return true }
+        return false
     }
     override func didEnter(from previousState: GKState?) {
         playerNode?.removeAction(forKey: characterAnimationKey)
