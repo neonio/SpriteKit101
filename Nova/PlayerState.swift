@@ -83,8 +83,9 @@ class WalkingState: PlayerState {
         }
     }
     let textures: [SKTexture] = (0..<6).map({return "player/\($0)"}).map(SKTexture.init)
-    lazy var action = {
-        SKAction.animate(with: textures, timePerFrame: 0.1)
+    lazy var action:SKAction = {
+        let baseAction = SKAction.animate(with: textures, timePerFrame: 0.1)
+        return SKAction.repeatForever(baseAction)
     }()
     
     override func didEnter(from previousState: GKState?) {

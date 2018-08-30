@@ -14,9 +14,13 @@ class GameScene: SKScene {
     private var player: SKNode?
     private var stick: SKNode?
     private var stickKnob: SKNode?
+    private var moonNode: SKNode?
+    private var mountain1Node: SKNode?
+    private var mountain2Node: SKNode?
     private var previousTime: TimeInterval = 0
     private var playerIsFacingRight = true
     private var playerGameStateMachine: GKStateMachine?
+    private var mainCamera:SKCameraNode?
     var stickEnabled: Bool = false
     var knobRadius: CGFloat = 50
     var playerSpeed:CGFloat = 4
@@ -25,6 +29,11 @@ class GameScene: SKScene {
         player = childNode(withName: "player")
         stick = childNode(withName: "stick")
         stickKnob = stick?.childNode(withName: "stickKnob")
+        moonNode = childNode(withName: "moon")
+        mountain1Node = childNode(withName: "mountain_1")
+        mountain2Node = childNode(withName: "mountain_2")
+        mainCamera = childNode(withName: "CameraNode") as? SKCameraNode
+        
         guard let player = player else {
             return
         }
@@ -96,6 +105,17 @@ class GameScene: SKScene {
         if previousTime != 0 {
             deltaTime = currentTime - previousTime
         }
+        mainCamera?.position.x = player?.position.x ?? 0
+        stick?.position.x = (mainCamera?.position.x ?? 0) - 280
+        stick?.position.y = (mainCamera?.position.y ?? 0) - 100
+        
+        let mountainOffsetX1Action = SKAction.moveTo(x: (player?.position.x ?? 0) / -10, duration: 0)
+        let mountainOffsetX2Action = SKAction.moveTo(x: (player?.position.x ?? 0) / -20, duration: 0)
+        mountain1Node?.run(mountainOffsetX1Action)
+        mountain2Node?.run(mountainOffsetX2Action)
+        
+        let moonOffsetXAction = SKAction.moveTo(x: (player?.position.x ?? 0) / -5 , duration: 0)
+        moonNode?.run(moonOffsetXAction)
         
         previousTime = currentTime
         guard let knob = stickKnob else {return}
